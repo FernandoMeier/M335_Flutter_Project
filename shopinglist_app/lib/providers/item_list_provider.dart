@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:shopinglist_app/models/shoping_list_item.dart';
 import 'package:shopinglist_app/services/item_service.dart';
@@ -21,5 +23,7 @@ class ItemListProvider extends ChangeNotifier {
     _itemService.delete(id).then((_) => {notifyListeners()});
   }
 
-  // todo: add update function
+  void editShoppingItem(String id, String itemName, double quantity, String notes) {
+    _itemService.update(id, itemName, quantity as Double, notes).then((_) => {notifyListeners()});
+  }
 }

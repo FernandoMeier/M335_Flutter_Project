@@ -46,7 +46,7 @@ class _ItemListWidget extends StatelessWidget {
             icon: Icon(Icons.edit),
             onPressed: () {
               Provider.of<ItemListProvider>(context, listen: false)
-                  .deleteShopingItem(shopingItem.id);
+                  .editShoppingItem(shopingItem.id, shopingItem.itemName, shopingItem.quantity, shopingItem.notes);
             },
           ),
         );

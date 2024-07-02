@@ -9,8 +9,6 @@ void main() async {
   await itemService.load();
   var itemListProvider = ItemListProvider(itemService);
 
-  //runApp(const ShopApp());
-
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => itemListProvider),
