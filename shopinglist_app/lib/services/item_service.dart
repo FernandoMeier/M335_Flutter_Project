@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:shopinglist_app/models/shoping_list_item.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ItemService {
   // Create
@@ -23,6 +26,7 @@ class ItemService {
         break;
       }
     }
+    return _save();
   }
 
   // Delete
@@ -31,24 +35,33 @@ class ItemService {
     return _save();
   }
 
-  // Call load() once before using the service
+  //! Call load() once before using the service!
   Future<void> load() async {
-    // todo : load data from a server or DB
-    _shopingListItems = _fakeData;
-    return Future.delayed(const Duration(milliseconds: 500));
+    final file = await _localFile;
+    if (await file.exists()) {
+      String content = await file.readAsString();
+      List<dynamic> jsonData = jsonDecode(content);
+      _shopingListItems =
+          jsonData.map((json) => ShopingListItem.fromJson(json)).toList();
+    }
   }
 
   Future<void> _save() async {
-    // todo: add saving to file or sth.
+    final file = await _localFile;
+    List<Map<String, dynamic>> jsonData =
+        _shopingListItems.map((item) => item.toJson()).toList();
+    await file.writeAsString(jsonEncode(jsonData));
+  }
+
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/shopping_list.json');
   }
 
   List<ShopingListItem> _shopingListItems = [];
 }
-
-List<ShopingListItem> _fakeData = [
-  ShopingListItem("Bread", 2.0, notes: "Gluten Free"),
-  ShopingListItem("Milk", 3.0, notes: "Lactose Free"),
-  ShopingListItem("Tomatoes", 2.0),
-  ShopingListItem("Salami", 6.0, notes: "Big Bois"),
-  ShopingListItem("Thing", 2.0),
-];

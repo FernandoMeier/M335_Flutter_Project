@@ -8,6 +8,7 @@ import 'package:shopinglist_app/services/item_service.dart';
 /// If it complains about ABS or sth. that sounded like that: flutter clean --> flutter pub get --> delete on phone --> debug mode run again
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   var itemService = ItemService();
   await itemService.load();
   var itemListProvider = ItemListProvider(itemService);

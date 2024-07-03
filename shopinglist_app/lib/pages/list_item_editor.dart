@@ -92,7 +92,7 @@ class _EditItemState extends State<_EditItemForm> {
             TextFormField(
               controller: _notesController,
               decoration: InputDecoration(
-                hintText: "Additional information",
+                hintText: "Additional information (optional)",
               ),
             ),
             ElevatedButton(

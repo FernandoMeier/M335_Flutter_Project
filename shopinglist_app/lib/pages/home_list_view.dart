@@ -16,7 +16,7 @@ class HomeListView extends StatelessWidget {
         title: Text("Your Shopping List"),
       ),
       body: Padding(
-          padding: const EdgeInsets.all(40.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -38,29 +38,46 @@ class _ItemListWidget extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         var shopingItem = itemList[index];
 
-        return ListTile(
-          key: Key(shopingItem.id),
-          title: Text(shopingItem.itemName),
-          subtitle: Column(
-            children: [
-              Text("Quantity: ${shopingItem.quantity}"),
-              Text("Notes: ${shopingItem.notes}")
-            ],
+        return Dismissible(
+          key: Key(shopingItem.id), // Unique key for each item
+          direction: DismissDirection.endToStart,
+          background: Container(
+            color: Colors.red,
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
           ),
-          trailing: IconButton(
-            icon: Icon(Icons.edit),
-            /*onPressed: () {
-              Provider.of<ItemListProvider>(context, listen: false)
-                  .editShoppingItem(shopingItem.id, "this is a test",
-                      2.0, "seems to work i guess (yippie!!!)");
-            },*/
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => ListItemEditor(item: shopingItem),
-                ),
-              );
-            },
+          onDismissed: (direction) {
+            // Remove the item from the data source
+            Provider.of<ItemListProvider>(context, listen: false)
+                .deleteShopingItem(shopingItem.id);
+          },
+          child: Card(
+            elevation: 4,
+            child: ListTile(
+              key: Key(shopingItem.id),
+              title: Text(shopingItem.itemName),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Quantity: ${shopingItem.quantity}"),
+                  Text("Notes: ${shopingItem.notes}")
+                ],
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ListItemEditor(item: shopingItem),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         );
       },
@@ -129,37 +146,40 @@ class _CreateItemState extends State<_CreateNewItemWidget> {
               TextFormField(
                 controller: _notesController,
                 decoration: InputDecoration(
-                  hintText: "Additional information",
+                  hintText: "Additional information (optional)",
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    double quantity;
-                    try {
-                      quantity = double.parse(_quantityController.text);
-                    } catch (e) {
-                      // Handle the error, e.g., show a message to the user
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content:
-                              Text('Please enter a valid number for quantity'),
-                        ),
+              Padding(
+                padding: EdgeInsets.only(top: 10.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      double quantity;
+                      try {
+                        quantity = double.parse(_quantityController.text);
+                      } catch (e) {
+                        // Handle the error, e.g., show a message to the user
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                'Please enter a valid number for quantity'),
+                          ),
+                        );
+                        return;
+                      }
+                      Provider.of<ItemListProvider>(context, listen: false)
+                          .addItem(
+                        _itemNameController.text,
+                        quantity,
+                        _notesController.text,
                       );
-                      return;
+                      _itemNameController.clear();
+                      _quantityController.clear();
+                      _notesController.clear();
                     }
-                    Provider.of<ItemListProvider>(context, listen: false)
-                        .addItem(
-                      _itemNameController.text,
-                      quantity,
-                      _notesController.text,
-                    );
-                    _itemNameController.clear();
-                    _quantityController.clear();
-                    _notesController.clear();
-                  }
-                },
-                child: Text('Create a new item'),
+                  },
+                  child: Text('Create a new item'),
+                ),
               )
             ],
           ),
