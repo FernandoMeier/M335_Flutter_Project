@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:shopinglist_app/models/shoping_list_item.dart';
 
@@ -17,8 +16,13 @@ class ItemService {
 
   // Update
   Future<void> update(
-      String id, String itemName, Double quantity, String? notes) async {
-    // todo: modify and save
+      String id, String itemName, double quantity, String? notes) async {
+    for (var item in _shopingListItems) {
+      if (item.id == id) {
+        item.update(itemName, quantity, notes);
+        break;
+      }
+    }
   }
 
   // Delete

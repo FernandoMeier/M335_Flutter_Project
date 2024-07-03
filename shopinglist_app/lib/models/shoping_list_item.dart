@@ -16,4 +16,10 @@ class ShopingListItem {
   String _itemName;
   double _quantity;
   String _notes;
+
+  void update(String itemName, double quantity, String? notes) {
+    _itemName = itemName;
+    _quantity = quantity;
+    _notes = notes ?? _notes;
+  }
 }
