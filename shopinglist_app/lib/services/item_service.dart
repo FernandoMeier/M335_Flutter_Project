@@ -12,6 +12,11 @@ class ItemService {
     return _save();
   }
 
+  Future<void> createAtIndex(ShopingListItem item, int index) async {
+    _shopingListItems.insert(index, item);
+    return _save(); // Ensure the list is saved after the insertion
+  }
+
   // Read
   List<ShopingListItem> readAll() {
     return List.unmodifiable(_shopingListItems);

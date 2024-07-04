@@ -11,30 +11,32 @@ import 'package:shopinglist_app/services/item_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  var itemService = ItemService();
-  await itemService.load();
-  var itemListProvider = ItemListProvider(itemService);
+  final itemService = ItemService();
+  await itemService.load(); // Load items from storage
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => itemListProvider),
-    ],
-    child: const ShopApp(),
-  ));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ItemListProvider(itemService),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
-class ShopApp extends StatelessWidget {
-  const ShopApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Shoping List",
+      title: 'Shopping List App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
-      home: const HomeListView(),
+      home: HomeListView(),
     );
   }
 }

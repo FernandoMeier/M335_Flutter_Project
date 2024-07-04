@@ -7,28 +7,41 @@ import 'package:shopinglist_app/pages/list_item_editor.dart';
 import 'package:shopinglist_app/providers/item_list_provider.dart';
 
 class HomeListView extends StatelessWidget {
-  const HomeListView({super.key});
+  HomeListView({super.key});
+
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Your Shopping List"),
-      ),
-      body: Padding(
+    return ScaffoldMessenger(
+      key: scaffoldMessengerKey,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Your Shopping List"),
+        ),
+        body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: _ItemListWidget()),
+              Expanded(
+                  child: _ItemListWidget(
+                      scaffoldMessengerKey: scaffoldMessengerKey)),
               _CreateNewItemWidget(),
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 }
 
 class _ItemListWidget extends StatelessWidget {
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey;
+
+  const _ItemListWidget({required this.scaffoldMessengerKey});
+
   @override
   Widget build(BuildContext context) {
     var itemList = Provider.of<ItemListProvider>(context).shopingListItems;
@@ -61,18 +74,20 @@ class _ItemListWidget extends StatelessWidget {
             ),
           ),
           onDismissed: (direction) {
-            // Remove the item from the data source
             Provider.of<ItemListProvider>(context, listen: false)
                 .deleteShopingItem(shopingItem.id);
 
-            // Optionally show a snackbar or other feedback
-            ScaffoldMessenger.of(context).showSnackBar(
+            // Use the GlobalKey to show the SnackBar
+            scaffoldMessengerKey.currentState!.showSnackBar(
               SnackBar(
                 content: Text('Item deleted'),
                 action: SnackBarAction(
                   label: 'Undo',
                   onPressed: () {
-                    // todo: add undo function
+                    Provider.of<ItemListProvider>(
+                            scaffoldMessengerKey.currentContext!,
+                            listen: false)
+                        .undoDelete();
                   },
                 ),
               ),
