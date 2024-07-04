@@ -95,33 +95,53 @@ class _EditItemState extends State<_EditItemForm> {
                 hintText: "Additional information (optional)",
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  double quantity;
-                  try {
-                    quantity = double.parse(_quantityController.text);
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content:
-                            Text('Please enter a valid number for quantity'),
-                      ),
-                    );
-                    return;
-                  }
-                  Provider.of<ItemListProvider>(context, listen: false)
-                      .editShoppingItem(
-                    widget.item.id,
-                    _itemNameController.text,
-                    quantity,
-                    _notesController.text,
-                  );
-                  Navigator.of(context).pop();
-                }
-              },
-              child: Text('Save'),
-            )
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Cancel and go back
+                    },
+                    child: Text('Cancel'),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        double quantity;
+                        try {
+                          quantity = double.parse(_quantityController.text);
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              shape: RoundedRectangleBorder(),
+                              content: Text(
+                                  'Please enter a valid number for quantity'),
+                            ),
+                          );
+                          return;
+                        }
+                        Provider.of<ItemListProvider>(context, listen: false)
+                            .editShoppingItem(
+                          widget.item.id,
+                          _itemNameController.text,
+                          quantity,
+                          _notesController.text,
+                        );
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: Text('Save'),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -134,23 +154,7 @@ class _ExitOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop(); // Cancel and go back
-          },
-          child: Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            // Assuming that form validation and item update are handled within _EditItemForm
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Press Save to apply changes')),
-            );
-          },
-          child: Text('Save'),
-        ),
-      ],
+      children: [],
     );
   }
 }

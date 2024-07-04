@@ -33,6 +33,15 @@ class _ItemListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var itemList = Provider.of<ItemListProvider>(context).shopingListItems;
 
+    if (itemList.isEmpty) {
+      return Center(
+        child: Text(
+          "No items yet",
+          style: TextStyle(color: Colors.grey, fontSize: 16),
+        ),
+      );
+    }
+
     return ListView.builder(
       itemCount: itemList.length,
       itemBuilder: (BuildContext context, int index) {
@@ -42,18 +51,32 @@ class _ItemListWidget extends StatelessWidget {
           key: Key(shopingItem.id), // Unique key for each item
           direction: DismissDirection.endToStart,
           background: Container(
-            color: Colors.red,
+            color: Colors.redAccent, // Customized background color
             alignment: Alignment.centerRight,
             padding: EdgeInsets.symmetric(horizontal: 20.0),
             child: Icon(
-              Icons.delete,
+              Icons.delete, // Changed icon to delete icon
               color: Colors.white,
+              size: 30,
             ),
           ),
           onDismissed: (direction) {
             // Remove the item from the data source
             Provider.of<ItemListProvider>(context, listen: false)
                 .deleteShopingItem(shopingItem.id);
+
+            // Optionally show a snackbar or other feedback
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Item deleted'),
+                action: SnackBarAction(
+                  label: 'Undo',
+                  onPressed: () {
+                    // todo: add undo function
+                  },
+                ),
+              ),
+            );
           },
           child: Card(
             elevation: 4,
