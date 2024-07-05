@@ -49,7 +49,7 @@ class _ItemListWidget extends StatelessWidget {
     if (itemList.isEmpty) {
       return Center(
         child: Text(
-          "No items yet",
+          "No items yet, add a new one below or point your screen to the ground to generate a template",
           style: TextStyle(color: Colors.grey, fontSize: 16),
         ),
       );
