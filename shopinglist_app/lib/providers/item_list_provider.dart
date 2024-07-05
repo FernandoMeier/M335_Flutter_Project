@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shopinglist_app/models/shoping_list_item.dart';
 import 'package:shopinglist_app/services/item_service.dart';
+import 'package:vibration/vibration.dart';
 
 class ItemListProvider extends ChangeNotifier {
   ItemListProvider(this._itemService);
@@ -30,6 +31,7 @@ class ItemListProvider extends ChangeNotifier {
 
   void undoDelete() {
     if (_lastDeletedItem != null && _lastDeletedItemIndex != null) {
+      Vibration.vibrate();
       _itemService
           .createAtIndex(_lastDeletedItem!, _lastDeletedItemIndex!)
           .then((_) {
