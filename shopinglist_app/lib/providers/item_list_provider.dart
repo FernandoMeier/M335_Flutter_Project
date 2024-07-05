@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:shopinglist_app/models/shoping_list_item.dart';
 import 'package:shopinglist_app/services/item_service.dart';
@@ -42,7 +44,7 @@ class ItemListProvider extends ChangeNotifier {
         .then((_) {
       notifyListeners();
       // Adding a delay of 1 second before allowing another item to be added
-      Future.delayed(Duration(seconds: 1));
+      Future.delayed(const Duration(seconds: 1));
     });
   }
 
